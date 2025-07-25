@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grønli IP & Life Registry</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      text-align: center;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      margin-bottom: 3rem;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+    input, textarea, select {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .submit-btn {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    .entries {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .entries h3 {
+      color: #333;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 0.5rem;
+    }
+    .entry {
+      background: linear-gradient(135deg, #f8f9ff, #e8efff);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 5px solid #667eea;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+    .entry:hover {
+      transform: translateY(-2px);
+    }
+    .entry-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    .entry-type {
+      background: #667eea;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+    .entry-registrant {
+      font-style: italic;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+    .entry-description {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+    .entry-meta {
+      font-size: 0.9rem;
+      color: #888;
+      border-top: 1px solid #eee;
+      padding-top: 0.75rem;
+    }
+    .status-message {
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      display: block;
+    }
+    .stat-label {
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 768px) {
+      body { margin: 1rem; }
+      h1 { font-size: 2rem; }
+      .form-container, .entries { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛡️ Grønli IP & Life Registry</h1>
+    <h2>Register Your Sovereign Property & Identity Claims</h2>
+
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-number" id="totalEntries">0</span>
+        <div class="stat-label">Total Registrations</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="todayEntries">0</span>
+        <div class="stat-label">Today's Registrations</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="uniqueRegistrants">0</span>
+        <div class="stat-label">Unique Registrants</div>
+      </div>
+    </div>
+
+    <div class="form-container">
+      <form id="registerForm" class="form-grid">
+        <div class="form-group">
+          <label for="registrationType">Registration Type</label>
+          <select id="registrationType" required>
+            <option value="">Select type...</option>
+            <option value="Name/Identity">Name/Identity</option>
+            <option value="Intellectual Property">Intellectual Property</option>
+            <option value="Creative Work">Creative Work</option>
+            <option value="Business/Trade Name">Business/Trade Name</option>
+            <option value="Domain/Digital Asset">Domain/Digital Asset</option>
+            <option value="Life Event/Milestone">Life Event/Milestone</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="name">What are you registering?</label>
+          <input type="text" id="name" placeholder="e.g., Name, Creative Work, Business Title, Domain" required />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description & Proof</label>
+          <textarea id="description" placeholder="Provide detailed description, evidence, or proof of your claim..." rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="registered_by">Your Sovereign Name or Trust</label>
+          <input type="text" id="registered_by" placeholder="Your legal name, trust, or entity" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Registry Access Code</label>
+          <input type="password" id="password" placeholder="Enter your registry password" required />
+        </div>
+
+        <button type="submit" class="submit-btn">🔒 Submit to Registry</button>
+      </form>
+
+      <div id="statusMessage"></div>
+    </div>
+
+    <div class="entries">
+      <h3>📋 Registry Entries</h3>
+      <div id="entriesContainer">
+        <p style="text-align: center; color: #666; font-style: italic;">No entries registered yet. Be the first to register your claim!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // In-memory storage for demonstration
+    let registryEntries = [];
+    const VALID_PASSWORDS = ['registry123', 'sovereign', 'admin', 'gronli2025'];
+
+    const form = document.getElementById('registerForm');
+    const entriesContainer = document.getElementById('entriesContainer');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // Initialize with some sample data
+    registryEntries = [
+      {
+        id: 1,
+        type: 'Name/Identity',
+        name: 'John Sovereign Smith',
+        description: 'Claiming sovereign identity and natural rights under common law. Born free man, not subject to statutory jurisdiction.',
+        registered_by: 'John of the family Smith',
+        registered_at: new Date('2025-07-15T10:30:00'),
+        verification_code: 'GRN-001'
+      },
+      {
+        id: 2,
+        type: 'Creative Work',
+        name: 'The Liberty Manifesto',
+        description: 'Original written work exploring natural law and individual sovereignty. Copyright claimed under natural law, not statutory.',
+        registered_by: 'Liberty Trust Foundation',
+        registered_at: new Date('2025-07-18T14:22:00'),
+        verification_code: 'GRN-002'
+      }
+    ];
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        type: document.getElementById('registrationType').value,
+        name: document.getElementById('name').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        registered_by: document.getElementById('registered_by').value.trim(),
+        password: document.getElementById('password').value
+      };
+
+      // Validate password
+      if (!VALID_PASSWORDS.includes(formData.password)) {
+        showMessage('Invalid registry access code. Please contact the registry administrator.', 'error');
+        return;
+      }
+
+      // Validate required fields
+      if (!formData.type || !formData.name || !formData.registered_by) {
+        showMessage('Please fill in all required fields.', 'error');
+        return;
+      }
+
+      // Create new entry
+      const newEntry = {
+        id: registryEntries.length + 1,
+        type: formData.type,
+        name: formData.name,
+        description: formData.description || 'No additional details provided.',
+        registered_by: formData.registered_by,
+        registered_at: new Date(),
+        verification_code: `GRN-${String(registryEntries.length + 1).padStart(3, '0')}`
+      };
+
+      registryEntries.unshift(newEntry); // Add to beginning of array
+      
+      showMessage(`✅ Successfully registered "${formData.name}" with verification code: ${newEntry.verification_code}`, 'success');
+      form.reset();
+      updateDisplay();
+    });
+
+    function showMessage(message, type) {
+      statusMessage.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+      setTimeout(() => {
+        statusMessage.innerHTML = '';
+      }, 5000);
+    }
+
+    function updateDisplay() {
+      updateStats();
+      renderEntries();
+    }
+
+    function updateStats() {
+      const today = new Date().toDateString();
+      const todayCount = registryEntries.filter(entry => 
+        new Date(entry.registered_at).toDateString() === today
+      ).length;
+      
+      const uniqueRegistrants = new Set(registryEntries.map(entry => entry.registered_by)).size;
+
+      document.getElementById('totalEntries').textContent = registryEntries.length;
+      document.getElementById('todayEntries').textContent = todayCount;
+      document.getElementById('uniqueRegistrants').textContent = uniqueRegistrants;
+    }
+
+    function renderEntries() {
+      if (registryEntries.length === 0) {
+        entriesContainer.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No entries registered yet. Be the first to register your claim!</p>';
+        return;
+      }
+
+      entriesContainer.innerHTML = registryEntries.map(entry => `
+        <div class="entry">
+          <div class="entry-name">${entry.name}</div>
+          <div class="entry-type">${entry.type}</div>
+          <div class="entry-registrant">Registered by: <strong>${entry.registered_by}</strong></div>
+          <div class="entry-description">${entry.description}</div>
+          <div class="entry-meta">
+            <strong>Verification Code:</strong> ${entry.verification_code} | 
+            <strong>Registered:</strong> ${new Date(entry.registered_at).toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Initialize display
+    updateDisplay();
+  </script>
+</body>
+          </html>
